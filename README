@@ -1,0 +1,120 @@
+
+drag	    ondrag	当拖动元素或选中的文本时触发。
+dragend	    ondragend	当拖拽操作结束时触发 (比如松开鼠标按键或敲“Esc”键). (见结束拖拽)
+dragenter	ondragenter	当拖动元素或选中的文本到一个可释放目标时触发（见 指定释放目标）。
+dragexit	ondragexit	当元素变得不再是拖动操作的选中目标时触发。
+dragleave	ondragleave	当拖动元素或选中的文本离开一个可释放目标时触发。
+dragover	ondragover	当元素或选中的文本被拖到一个可释放目标上时触发（每100毫秒触发一次）。
+dragstart	ondragstart	当用户开始拖动一个元素或选中的文本时触发（见开始拖动操作）。
+drop	    ondrop	当元素或选中的文本在可释放目标上被释放时触发（见执行释放）。
+
+
+
+
+确定什么是可拖动的
+
+让一个元素被拖动需要添加 draggable 属性，再加上全局事件处理函数ondragstart ，如下面的示例代码所示：
+
+function dragstart_handler(ev) {
+ console.log("dragStart");
+ // Add the target element's id to the data transfer object
+ ev.dataTransfer.setData("text/plain", ev.target.id);
+}
+
+<body>
+ <p id="p1" draggable="true" ondragstart="dragstart_handler(event);">This element is draggable.</p>
+</body>
+
+
+定义拖动数据
+
+应用程序可以在拖动操作中包含任意数量的数据项。每个数据项都是一个  string 类型，典型的MIME类型，如：text/html。
+
+每个 drag event  都有一个dataTransfer 属性保保存事件的数据。这个属性（ DataTransfer 对象）也有管理拖动数据的方法。setData() 方法添加一个项目的拖拽数据，如下面的示例代码所示：
+
+function dragstart_handler(ev) {
+  // 添加拖拽数据
+  ev.dataTransfer.setData("text/plain", ev.target.id);
+  ev.dataTransfer.setData("text/html", "<p>Example paragraph</p>");
+  ev.dataTransfer.setData("text/uri-list", "http://developer.mozilla.org");
+}
+
+定义拖动图像节
+
+拖动过程中，浏览器会在鼠标旁显示一张默认图片。当然，应用程序也可以通过setDragImage() 方法自定义一张图片，如下面的例子所示。
+
+function dragstart_handler(ev) {
+  // Create an image and then use it for the drag image.
+  // NOTE: change "example.gif" to an existing image or the image
+  // will not be created and the default drag image will be used.
+  var img = new Image();
+  img.src = 'example.gif';
+  ev.dataTransfer.setDragImage(img, 10, 10);
+}
+
+定义拖动效果
+
+dropEffect属性用来控制拖放操作中用户给予的反馈。它会影响到拖动过程中浏览器显示的鼠标样式。比如，当用户悬停在目标元素上的时候，浏览器鼠标也许要反映拖放操作的类型。
+
+有3个效果可以定义：
+
+copy 表明被拖动的数据将从它原本的位置拷贝到目标的位置。
+
+move 表明被拖动的数据将被移动。
+
+link 表明在拖动源位置和目标位置之间将会创建一些关系表格或是连接。
+
+在拖动过程中，拖动效果也许会被修改以用于表明在具体位置上具体效果是否被允许，如果允许，在该位置则被允许放置。
+
+以下例子表明如何使用该属性。
+
+function dragstart_handler(ev) {
+  // Set the drag effect to copy
+  ev.dataTransfer.dropEffect = "copy";
+}
+
+定义一个放置区
+
+当拖动一个项目到HTML元素中时，浏览器默认不会有任何响应。想要让一个元素变成可释放区域，该元素必须设置ondragover和ondrop事件处理程序属性，下面的例子通过简单的事件处理展示了如何使用这些属性，
+
+function dragover_handler(ev) {
+ ev.preventDefault();
+ // Set the dropEffect to move
+ ev.dataTransfer.dropEffect = "move"
+}
+function drop_handler(ev) {
+ ev.preventDefault();
+ // Get the id of the target and add the moved element to the target's DOM
+ var data = ev.dataTransfer.getData("text");
+ ev.target.appendChild(document.getElementById(data));
+}
+<body>
+ <div id="target" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">Drop Zone</div>
+</body>
+
+处理放置效果
+
+drop事件的处理程序是以程序指定的方法处理拖动数据。一般，程序调用getData()方法取出拖动项目并按一定方式处理。程序意义根据dropEffect 的值与/或可变更关键字的状态而不同
+
+下面的例子展示了一个处理程序，从拖动数据中获取事件源元素的id然后根据id移动源元素到目标元素
+
+function dragstart_handler(ev) {
+ // Add the target element's id to the data transfer object
+ ev.dataTransfer.setData("text/plain", ev.target.id);
+ ev.dropEffect = "move";
+}
+function dragover_handler(ev) {
+ ev.preventDefault();
+ // Set the dropEffect to move
+ ev.dataTransfer.dropEffect = "move"
+}
+function drop_handler(ev) {
+ ev.preventDefault();
+ // Get the id of the target and add the moved element to the target's DOM
+ var data = ev.dataTransfer.getData("text");
+ ev.target.appendChild(document.getElementById(data));
+}
+<body>
+ <p id="p1" draggable="true" ondragstart="dragstart_handler(event);">This element is draggable.</p>
+ <div id="target" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">Drop Zone</div>
+</body>

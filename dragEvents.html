@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    #dragFile {
+      width: 400px;
+      height: 400px;
+      border: 1px solid red;
+    }
+  </style>
+</head>
+<body>
+  <div id="dragFile">
+
+  </div>
+</body>
+<script>
+
+  let dragDom = document.querySelector('#dragFile')
+  // 当被鼠标拖动的对象进入其容器范围内时触发此事件
+  dragDom.ondragenter = (event) => {
+    console.log(event)
+  }
+  // 当某被拖动的对象在另一对象容器范围内拖动时触发此事件
+  dragDom.ondragover = (event) => {
+    console.log(event)
+    event.preventDefault();
+  }
+  // 当被鼠标拖动的对象离开其容器范围内时触发此事件
+  dragDom.ondragleave = (event) => {
+    console.log(event)
+  }
+  // 在一个拖动过程中，释放鼠标键时触发此事件
+  dragDom.ondrop = (event) => {
+    console.log(event)
+    console.log(event.dataTransfer.files)
+    event.preventDefault();
+  }
+
+</script>
+</html>

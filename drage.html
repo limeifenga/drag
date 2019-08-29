@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <style>
+    .droptarget {
+      float: left;
+      width: 100px;
+      height: 35px;
+      margin: 15px;
+      margin-right: 100px;
+      padding: 10px;
+      border: 1px solid #aaaaaa;
+    }
+  </style>
+</head>
+<body>
+
+<p>该实例演示了如何向 p 元素添加  "ondragstart" 和 "ondrag" 事件及向 div 元素添加 "ondragover" 和 "ondrop" 事件。 </p>
+<p>在两个矩形框中来回拖动 p 元素:</p>
+<div class="droptarget"
+     ondrop="drop(event)"
+     ondragenter="dragEnter(event)"
+     ondragleave="dragLeave(event)"
+     ondragover="allowDrop(event)">
+  <p ondragstart="dragStart(event)"   draggable="true" id="dragtarget">拖动我!</p>
+</div>
+<div class="droptarget"
+     ondrop="drop(event)"
+     ondragenter="dragEnter(event)"
+     ondragleave="dragLeave(event)"
+     ondragover="allowDrop(event)">
+</div>
+<p id="demo"></p>
+<script>
+  // 用户开始拖动元素时触发
+  function dragStart(event) {
+    console.log(event)
+    // dataTransfer 对象用来 保存 通过拖动，拖到浏览器的数据 一项或多项数据、一种或者多种数据类型
+    event.dataTransfer.setData("Text", event.target.id);  // @param  数据类型  ,  值
+  }
+  // 当被鼠标拖动的对象进入其容器范围内时触发此事件
+  function dragEnter(event) {
+    console.log(event)
+    document.getElementById("demo").innerHTML = "进入放置区域";
+    if ( event.target.className == "droptarget" ) {
+      event.target.style.backgroundColor = "lightblue";
+    }
+  }
+  // 当被鼠标拖动的对象离开其容器范围内时触发此事件
+  function dragLeave(event) {
+    console.log(event)
+    document.getElementById("demo").innerHTML = "离开放置区域";
+    if ( event.target.className == "droptarget" ) {
+      event.target.style.backgroundColor = "";
+    }
+  }
+  function allowDrop(event) {
+    event.preventDefault();
+  }
+  // 在一个拖动过程中，释放鼠标键时触发此事件
+  function drop(event) {
+    console.log(event)
+    event.preventDefault();
+    event.target.style.backgroundColor = "";
+    var data = event.dataTransfer.getData("Text");
+    event.target.appendChild(document.getElementById(data));
+  }
+</script>
+
+</body>
+</html>
